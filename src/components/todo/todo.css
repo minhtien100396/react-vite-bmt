@@ -46,9 +46,15 @@
     gap: 10px;
     border: 1px solid #ccc;
     padding: 15px;
-    width: 700px;
+    width: 1000px;
     border-radius: 5px;
     margin-bottom: 30px;
+}
+
+.todo-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
 }
 
 
