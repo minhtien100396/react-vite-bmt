@@ -1,5 +1,7 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
+import Footer from "./components/layout/footer";
+import Header from "./components/layout/header";
 import "./components/todo/todo.css";
 import TodoData from "./components/todo/TodoData";
 import TodoNew from "./components/todo/TodoNew";
@@ -27,6 +29,8 @@ const App = () => {
 
     return (
         <>
+            <Header />
+
             <div className="todo-container">
                 <div className="todo-title">Todo List</div>
                 <TodoNew addNewTodo={addNewTodo} />
@@ -50,6 +54,8 @@ const App = () => {
                         <img src={reactLogo} alt="logo" className='logo' />
                     </div>} */}
             </div>
+
+            <Footer />
         </>
     );
 };
