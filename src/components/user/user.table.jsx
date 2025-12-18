@@ -1,17 +1,23 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { message, notification, Popconfirm, Table } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { deleteUserAPI } from "../../services/api.service";
 import UpdateUserModal from "./update.user.modal";
 import ViewUserDetail from "./view.user.detail";
 
 const UserTable = (props) => {
-    const { dataUsers, loadUser } = props;
+    const { dataUsers, loadUser, current, pageSize, total, setCurrent, setPageSize } = props;
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
     const [dataDetail, setDataDetail] = useState(null);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [messageApi, holder] = message.useMessage();
+
+    useEffect(() => {
+        loadUser();
+    }, [current, pageSize]);
+
+
     const handleDeleteUser = async (id) => {
         if (id) {
             const res = await deleteUserAPI(id);
@@ -20,7 +26,11 @@ const UserTable = (props) => {
                     message: "Delete a user",
                     description: "Delete user thành công",
                 });
-                await loadUser();
+                if (dataUsers.length === 1 && current > 1) {
+                    setCurrent(current - 1);
+                } else {
+                    await loadUser();
+                }
             } else {
                 notification.error({
                     message: "Error delete a user",
@@ -31,6 +41,16 @@ const UserTable = (props) => {
     };
 
     const columns = [
+        {
+            title: "STT",
+            render: (_, record, index) => {
+                return (
+                    <>{pageSize * (current - 1) + (index + 1)}</>
+                )
+            }
+
+        },
+
         {
             title: "ID",
             dataIndex: "_id",
@@ -122,9 +142,33 @@ const UserTable = (props) => {
     //     },
     // ];
 
+    const onChange = (pagination, filters, sorter, extra) => {
+        if (pageSize && pagination.current) {
+            if (+current != +pagination.current) {
+                setCurrent(+pagination.current);
+            }
+        }
+
+        if (pageSize && pagination.pageSize) {
+            if (+pageSize != +pagination.pageSize) {
+                setPageSize(+pagination.pageSize);
+            }
+        }
+
+
+    };
     return (
         <>
-            <Table columns={columns} dataSource={dataUsers} rowKey={"_id"} />
+            <Table columns={columns} dataSource={dataUsers} rowKey={"_id"}
+                pagination={
+                    {
+                        current: current,
+                        pageSize: pageSize,
+                        showSizeChanger: true,
+                        total: total,
+                        showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} trên {total} rows</div>) },
+                        pageSizeOptions: ['5', '10', '20', '50', '100']
+                    }} onChange={onChange} />
             <UpdateUserModal
                 isModalUpdateOpen={isModalUpdateOpen}
                 setIsModalUpdateOpen={setIsModalUpdateOpen}

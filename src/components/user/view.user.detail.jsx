@@ -47,6 +47,11 @@ const ViewUserDetail = (props) => {
                     message: "Updated user avatar",
                     description: "Cập nhật avatar thành công"
                 })
+            } else {
+                notification.error({
+                    message: "Error update avatar",
+                    description: JSON.stringify(resUpdateAvatar.message)
+                })
             }
         } else {
             notification.error({

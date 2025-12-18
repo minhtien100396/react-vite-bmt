@@ -1,6 +1,7 @@
 import {
     BookOutlined,
     HomeOutlined,
+    SettingOutlined,
     UsergroupDeleteOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
@@ -25,6 +26,25 @@ const Header = () => {
             key: "books",
             icon: <BookOutlined />,
         },
+        {
+            label: 'Cài Đặt ',
+            key: 'setting',
+            icon: <SettingOutlined />,
+            children: [
+                {
+
+
+                    label: <Link to={'/login'}>Đăng nhập</Link>,
+                    key: 'login'
+
+                },
+                {
+                    label: <Link to={'/logout'}>Đăng xuất </Link>,
+                    key: 'logout'
+
+                },
+            ],
+        }
     ];
     const [current, setCurrent] = useState("");
     const onClick = (e) => {
