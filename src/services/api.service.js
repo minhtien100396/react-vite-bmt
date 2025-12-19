@@ -74,14 +74,47 @@ const registerUserAPI = (fullName, email, password, phone) => {
 const loginAPI = (email, password) => {
     const URL_BACKEND = "/api/v1/auth/login";
     const data = {
-        email: email,
+        username: email,
         password: password,
-        delay: 5000
+        // delay: 5000
     };
     return axios.post(URL_BACKEND, data);
 };
 
+const getAccountAPI = () => {
+    const URL_BACKEND = "/api/v1/auth/account";
+    return axios.get(URL_BACKEND);
+};
+
+const logoutAPI = () => {
+    const URL_BACKEND = "/api/v1/auth/logout";
+    return axios.post(URL_BACKEND);
+};
+
+const fetchAllBookAPI = (current, pageSize) => {
+    const URL_BACKEND = `/api/v1/book?current=${current}&pageSize=${pageSize}`;
+    return axios.get(URL_BACKEND);
+};
+
+const updateBookImgAPI = (img, _id, mainText, author, price, quantity, category) => {
+    const URL_BACKEND = "/api/v1/book";
+    const data = {
+        thumbnail: img,
+        _id: _id,
+        mainText: mainText,
+        author: author,
+        price: price,
+        quantity: quantity,
+        category: category
+    };
+    return axios.put(URL_BACKEND, data);
+};
 
 
 
-export { createUserAPI, deleteUserAPI, fetchAllUserAPI, updateUserAPI, handleUploadFile, updateUserAvatarAPI, registerUserAPI, loginAPI };
+export {
+    createUserAPI, deleteUserAPI, fetchAllUserAPI,
+    updateUserAPI, handleUploadFile, updateUserAvatarAPI,
+    registerUserAPI, loginAPI, getAccountAPI, logoutAPI,
+    fetchAllBookAPI, updateBookImgAPI
+};
