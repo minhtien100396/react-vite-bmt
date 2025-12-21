@@ -27,7 +27,7 @@ const updateUserAvatarAPI = (avatar, _id, fullName, phone) => {
         avatar: avatar,
         _id: _id,
         fullName: fullName,
-        phone: phone
+        phone: phone,
     };
     return axios.put(URL_BACKEND, data);
 };
@@ -48,17 +48,15 @@ const handleUploadFile = (file, folder) => {
     let config = {
         headers: {
             "upload-type": folder,
-            "Content-type": "multipart/form-data"
-        }
-    }
+            "Content-type": "multipart/form-data",
+        },
+    };
 
     const bodyFormData = new FormData();
-    bodyFormData.append("fileImg", file)
+    bodyFormData.append("fileImg", file);
 
-
-
-    return axios.post(URL_BACKEND, bodyFormData, config)
-}
+    return axios.post(URL_BACKEND, bodyFormData, config);
+};
 
 const registerUserAPI = (fullName, email, password, phone) => {
     const URL_BACKEND = "/api/v1/user/register";
@@ -96,25 +94,69 @@ const fetchAllBookAPI = (current, pageSize) => {
     return axios.get(URL_BACKEND);
 };
 
-const updateBookImgAPI = (img, _id, mainText, author, price, quantity, category) => {
+const createBookAPI = (
+    thumbnail,
+    mainText,
+    author,
+    price,
+    quantity,
+    category
+) => {
     const URL_BACKEND = "/api/v1/book";
     const data = {
-        thumbnail: img,
-        _id: _id,
+        thumbnail: thumbnail,
         mainText: mainText,
         author: author,
         price: price,
         quantity: quantity,
-        category: category
+        category: category,
+        sold: 2,
+        slider: ["2-579456815ebd4eb1376341dcd00c4708.jpg", "a.png"],
+    };
+    return axios.post(URL_BACKEND, data);
+};
+
+const updateBookAPI = (
+    _id,
+    thumbnail,
+    mainText,
+    author,
+    price,
+    quantity,
+    category
+) => {
+    const URL_BACKEND = `/api/v1/book/${_id}`;
+    const data = {
+        thumbnail: thumbnail,
+        mainText: mainText,
+        author: author,
+        price: price,
+        quantity: quantity,
+        category: category,
+        sold: 2,
+        slider: ["2-579456815ebd4eb1376341dcd00c4708.jpg", "a.png"],
     };
     return axios.put(URL_BACKEND, data);
 };
 
-
+const deleteBookAPI = (id) => {
+    const URL_BACKEND = `/api/v1/book/${id}`;
+    return axios.delete(URL_BACKEND);
+};
 
 export {
-    createUserAPI, deleteUserAPI, fetchAllUserAPI,
-    updateUserAPI, handleUploadFile, updateUserAvatarAPI,
-    registerUserAPI, loginAPI, getAccountAPI, logoutAPI,
-    fetchAllBookAPI, updateBookImgAPI
+    createBookAPI,
+    createUserAPI,
+    deleteBookAPI,
+    deleteUserAPI,
+    fetchAllBookAPI,
+    fetchAllUserAPI,
+    getAccountAPI,
+    handleUploadFile,
+    loginAPI,
+    logoutAPI,
+    registerUserAPI,
+    updateBookAPI,
+    updateUserAPI,
+    updateUserAvatarAPI,
 };

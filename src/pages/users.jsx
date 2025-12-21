@@ -11,7 +11,7 @@ const UsersPage = () => {
 
     useEffect(() => {
         loadUser();
-    }, []);
+    }, [current, pageSize]);
 
     const loadUser = async () => {
         const res = await fetchAllUserAPI(current, pageSize);
@@ -27,12 +27,15 @@ const UsersPage = () => {
         <>
             <div style={{ padding: "20px" }}>
                 <UserForm loadUser={loadUser} />
-                <UserTable dataUsers={dataUsers} loadUser={loadUser}
+                <UserTable
+                    dataUsers={dataUsers}
+                    loadUser={loadUser}
                     current={current}
                     pageSize={pageSize}
                     total={total}
                     setCurrent={setCurrent}
-                    setPageSize={setPageSize} />
+                    setPageSize={setPageSize}
+                />
             </div>
         </>
     );

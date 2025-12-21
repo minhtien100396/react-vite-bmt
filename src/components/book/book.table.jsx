@@ -1,11 +1,22 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { message, notification, Popconfirm, Table } from "antd";
 import { useEffect, useState } from "react";
+import { deleteBookAPI } from "../../services/api.service";
+import UpdateBookUnControl from "./update.book.uncontrol";
 import ViewBookDetail from "./view.book.detail";
 
-
 const BookTable = (props) => {
-    const { dataBooks, loadBook, current, pageSize, total, setCurrent, setPageSize } = props;
+    const {
+        dataBooks,
+        loadBook,
+        current,
+        pageSize,
+        total,
+        setCurrent,
+        setPageSize,
+        loading,
+        setLoading,
+    } = props;
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
     const [dataDetail, setDataDetail] = useState(null);
@@ -16,17 +27,12 @@ const BookTable = (props) => {
         loadBook();
     }, [current, pageSize]);
 
-
-
     const columns = [
         {
             title: "STT",
             render: (_, record, index) => {
-                return (
-                    <>{pageSize * (current - 1) + (index + 1)}</>
-                )
-            }
-
+                return <>{pageSize * (current - 1) + (index + 1)}</>;
+            },
         },
 
         {
@@ -80,16 +86,17 @@ const BookTable = (props) => {
                                 style={{ cursor: "pointer", color: "orange" }}
                                 onClick={() => {
                                     setDataUpdate(record);
+                                    console.log("record", record);
                                     setIsModalUpdateOpen(true);
                                 }}
                             />
                             {holder}
                             <Popconfirm
-                                title="Xóa người dùng "
-                                description={`Bạn chắc chắn muốn xóa user ${record.fullName} ?`}
-                                // onConfirm={() => {
-                                //     handleDeleteUser(record._id);
-                                // }}
+                                title="Xóa book "
+                                description={`Bạn chắc chắn muốn xóa book : ${record.mainText} ?`}
+                                onConfirm={() => {
+                                    handleDeleteBook(record._id);
+                                }}
                                 okText="Yes"
                                 cancelText="No"
                                 placement="top"
@@ -117,29 +124,75 @@ const BookTable = (props) => {
                 setPageSize(+pagination.pageSize);
             }
         }
-
-
     };
+
+    const handleDeleteBook = async (id) => {
+        if (id) {
+            const res = await deleteBookAPI(id);
+            if (res.data) {
+                notification.success({
+                    message: "Delete a book",
+                    description: "Delete book thành công",
+                });
+                if (dataBooks.length === 1 && current > 1) {
+                    setCurrent(current - 1);
+                } else {
+                    await loadBook();
+                }
+            } else {
+                notification.error({
+                    message: "Error delete a book",
+                    description: JSON.stringify(res.message),
+                });
+            }
+        }
+    };
+
     return (
         <>
-            <Table columns={columns} dataSource={dataBooks} rowKey={"_id"}
-                pagination={
-                    {
-                        current: current,
-                        pageSize: pageSize,
-                        showSizeChanger: true,
-                        total: total,
-                        showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} trên {total} rows</div>) },
-                        pageSizeOptions: ['5', '10', '20', '50', '100']
-                    }} onChange={onChange} />
+            <Table
+                columns={columns}
+                dataSource={dataBooks}
+                rowKey={"_id"}
+                pagination={{
+                    current: current,
+                    pageSize: pageSize,
+                    showSizeChanger: true,
+                    total: total,
+                    showTotal: (total, range) => {
+                        return (
+                            <div>
+                                {" "}
+                                {range[0]}-{range[1]} trên {total} rows
+                            </div>
+                        );
+                    },
+                    pageSizeOptions: ["5", "10", "20", "50", "100"],
+                }}
+                onChange={onChange}
+                loading={loading}
+            />
+            {/* <UpdateBookControl
+                isModalUpdateOpen={isModalUpdateOpen}
+                setIsModalUpdateOpen={setIsModalUpdateOpen}
+                dataUpdate={dataUpdate}
+                setDataUpdate={setDataUpdate}
+                loadBook={loadBook}
+            /> */}
+
+            <UpdateBookUnControl
+                isModalUpdateOpen={isModalUpdateOpen}
+                setIsModalUpdateOpen={setIsModalUpdateOpen}
+                dataUpdate={dataUpdate}
+                setDataUpdate={setDataUpdate}
+                loadBook={loadBook}
+            />
             <ViewBookDetail
                 isDetailOpen={isDetailOpen}
                 setIsDetailOpen={setIsDetailOpen}
                 dataDetail={dataDetail}
                 setDataDetail={setDataDetail}
-                loadBook={loadBook}
             />
-
         </>
     );
 };

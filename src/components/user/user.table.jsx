@@ -6,7 +6,15 @@ import UpdateUserModal from "./update.user.modal";
 import ViewUserDetail from "./view.user.detail";
 
 const UserTable = (props) => {
-    const { dataUsers, loadUser, current, pageSize, total, setCurrent, setPageSize } = props;
+    const {
+        dataUsers,
+        loadUser,
+        current,
+        pageSize,
+        total,
+        setCurrent,
+        setPageSize,
+    } = props;
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
     const [dataDetail, setDataDetail] = useState(null);
@@ -16,7 +24,6 @@ const UserTable = (props) => {
     useEffect(() => {
         loadUser();
     }, [current, pageSize]);
-
 
     const handleDeleteUser = async (id) => {
         if (id) {
@@ -44,11 +51,8 @@ const UserTable = (props) => {
         {
             title: "STT",
             render: (_, record, index) => {
-                return (
-                    <>{pageSize * (current - 1) + (index + 1)}</>
-                )
-            }
-
+                return <>{pageSize * (current - 1) + (index + 1)}</>;
+            },
         },
 
         {
@@ -118,29 +122,6 @@ const UserTable = (props) => {
             },
         },
     ];
-    // const data = [
-    //     {
-    //         key: "1",
-    //         name: "John Brown",
-    //         age: 32,
-    //         address: "New York No. 1 Lake Park",
-    //         tags: ["nice", "developer"],
-    //     },
-    //     {
-    //         key: "2",
-    //         name: "Jim Green",
-    //         age: 42,
-    //         address: "London No. 1 Lake Park",
-    //         tags: ["loser"],
-    //     },
-    //     {
-    //         key: "3",
-    //         name: "Joe Black",
-    //         age: 32,
-    //         address: "Sydney No. 1 Lake Park",
-    //         tags: ["cool", "teacher"],
-    //     },
-    // ];
 
     const onChange = (pagination, filters, sorter, extra) => {
         if (pageSize && pagination.current) {
@@ -154,21 +135,30 @@ const UserTable = (props) => {
                 setPageSize(+pagination.pageSize);
             }
         }
-
-
     };
     return (
         <>
-            <Table columns={columns} dataSource={dataUsers} rowKey={"_id"}
-                pagination={
-                    {
-                        current: current,
-                        pageSize: pageSize,
-                        showSizeChanger: true,
-                        total: total,
-                        showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} trên {total} rows</div>) },
-                        pageSizeOptions: ['5', '10', '20', '50', '100']
-                    }} onChange={onChange} />
+            <Table
+                columns={columns}
+                dataSource={dataUsers}
+                rowKey={"_id"}
+                pagination={{
+                    current: current,
+                    pageSize: pageSize,
+                    showSizeChanger: true,
+                    total: total,
+                    showTotal: (total, range) => {
+                        return (
+                            <div>
+                                {" "}
+                                {range[0]}-{range[1]} trên {total} rows
+                            </div>
+                        );
+                    },
+                    pageSizeOptions: ["5", "10", "20", "50", "100"],
+                }}
+                onChange={onChange}
+            />
             <UpdateUserModal
                 isModalUpdateOpen={isModalUpdateOpen}
                 setIsModalUpdateOpen={setIsModalUpdateOpen}

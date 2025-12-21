@@ -1,4 +1,10 @@
 import axios from "axios";
+import nProgress from "nprogress";
+
+nProgress.configure({
+    showSpinner: false,
+    trickleSpeed: 100,
+});
 
 // Set config defaults when creating the instance
 const instance = axios.create({
@@ -8,22 +14,36 @@ const instance = axios.create({
 // Alter defaults after instance has been created
 //instance.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-// Add a request interceptor 
-instance.interceptors.request.use(function (config) {
-    if (typeof window !== "undefined" && window && window.localStorage &&
-        window.localStorage.getItem('access_token')) {
-        config.headers.Authorization = 'Bearer ' + window.localStorage.getItem('access_token');
+// Add a request interceptor
+instance.interceptors.request.use(
+    function (config) {
+        nProgress.start();
+
+        if (
+            typeof window !== "undefined" &&
+            window &&
+            window.localStorage &&
+            window.localStorage.getItem("access_token")
+        ) {
+            config.headers.Authorization =
+                "Bearer " + window.localStorage.getItem("access_token");
+        }
+        // Do something before request is sent
+        return config;
+    },
+    function (error) {
+        nProgress.done();
+
+        // Do something with request error
+        return Promise.reject(error);
     }
-    // Do something before request is sent 
-    return config;
-}, function (error) {
-    // Do something with request error 
-    return Promise.reject(error);
-});
+);
 
 // Add a response interceptor
 instance.interceptors.response.use(
     function (response) {
+        nProgress.done();
+
         // Any status code that lies within the range of 2xx causes this function to trigger
         // Do something with response data
         if (response.data && response.data.data) return response.data;
@@ -31,6 +51,8 @@ instance.interceptors.response.use(
         return response;
     },
     function (error) {
+        nProgress.done();
+
         // Any status codes that fall outside the range of 2xx cause this function to trigger
         // Do something with response error
 
